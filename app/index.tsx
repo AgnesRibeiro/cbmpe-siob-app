@@ -1,13 +1,6 @@
-// app/index.tsx (na raiz do app)
+// app/index.tsx
 import { Redirect } from 'expo-router';
 
-const isAuthenticated = false; // Mantenha como 'false'
-
-export default function AppRoot() {
-  if (!isAuthenticated) {
-    // Redireciona para a rota app/LoginScreen.tsx
-    return <Redirect href="/LoginScreen" />;
-  }
-  // Se isAuthenticated fosse true, ele cairia para a próxima rota (o (app) group)
-  return <Redirect href="/(app)/index" />;
+export default function Index() {
+  return <Redirect href="/login" />;
 }

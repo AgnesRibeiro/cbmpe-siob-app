@@ -1,57 +1,184 @@
-// app/LoginScreen.tsx
-
-import { useState } from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
-// Importações Críticas:
 import { MaterialIcons } from '@expo/vector-icons';
-import { SIOB_COLORS } from '../constants/Colors';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-// *** CORREÇÃO DO CAMINHO COM BASE NA SUA ESTRUTURA: assets/images/ ***
-const SIOB_LOGO = require('../assets/images/SIOBlOGO.png');
+// ➕ IMPORTAÇÃO DA API
+import { login as authLogin } from '../services/auth';
+
+const SIOB_COLORS = {
+  primary: '#AE1A16',
+  white: '#FFFFFF',
+  text: '#212529',
+  background: '#f8f9fa',
+  cardBg: '#FFFFFF',
+  border: '#dee2e6',
+  inputBackground: '#FFFFFF',
+  placeholder: '#6c757d',
+  error: '#dc3545',
+};
 
 export default function LoginScreen() {
+  const router = useRouter();
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ matricula: '', senha: '' });
 
-  const handleLogin = () => {
-    console.log(`Tentativa de Login: ${matricula}/${senha}`);
+  const validateForm = () => {
+    const newErrors = { matricula: '', senha: '' };
+    let isValid = true;
+
+    if (!matricula.trim()) {
+      newErrors.matricula = 'Matrícula é obrigatória';
+      isValid = false;
+    }
+
+    if (!senha.trim()) {
+      newErrors.senha = 'Senha é obrigatória';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleLogin = async () => {
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+
+    try {
+      console.log('🔐 Tentativa de login na API:', { matricula });
+
+      const result = await authLogin(matricula, senha);
+
+      if (result.success) {
+        console.log('✅ Login realizado com sucesso via API');
+        router.replace('/DashboardScreen');
+      } else {
+        Alert.alert('Erro', result?.data?.message || 'Credenciais inválidas');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao fazer login:', error);
+      Alert.alert('Erro', 'Falha ao conectar com a API');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.centeredContent}>
-
-        <View style={styles.logoArea}>
-          <View style={styles.logoContainer}>
-            {/* *** LOGO INSERIDA AQUI *** */}
-            <Image
-              source={SIOB_LOGO}
-              style={styles.logoImage}
-              resizeMode="contain"
-            />
-          </View>
-          <Text style={styles.title}>Sistema Integrado de Ocorrências</Text>
-        </View>
-
-        <View style={styles.formCard}>
-          {/* Inputs Matrícula e Senha */}
-          <View style={styles.inputContainer}>
-            <MaterialIcons name="person" size={24} color="#999" style={styles.inputIcon} />
-            <TextInput style={styles.inputField} placeholder="Matrícula" placeholderTextColor="#777" keyboardType="numeric" value={matricula} onChangeText={setMatricula} />
-          </View>
-          <View style={styles.inputContainer}>
-            <MaterialIcons name="lock" size={24} color="#999" style={styles.inputIcon} />
-            <TextInput style={styles.inputField} placeholder="Senha" placeholderTextColor="#777" secureTextEntry value={senha} onChangeText={setSenha} />
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <View style={styles.logoWrapper}>
+                <Image
+                  source={require('../assets/images/SIOBIOGO.png')}
+                  style={styles.logo}
+                  resizeMode="cover"
+                />
+              </View>
+              <Text style={styles.logoText}>SIOB</Text>
+            </View>
           </View>
 
-          {/* Botão de Login */}
-          <TouchableOpacity style={styles.button} onPress={handleLogin} activeOpacity={0.8}>
-            <Text style={styles.buttonText}>ENTRAR</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.formContainer}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Matrícula</Text>
+              <View style={[
+                styles.inputContainer,
+                errors.matricula ? styles.inputError : null
+              ]}>
+                <MaterialIcons name="person" size={20} color={SIOB_COLORS.placeholder} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Digite sua matrícula"
+                  placeholderTextColor={SIOB_COLORS.placeholder}
+                  value={matricula}
+                  onChangeText={setMatricula}
+                  keyboardType="numeric"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  editable={!isLoading}
+                />
+              </View>
+              {errors.matricula ? (
+                <Text style={styles.errorText}>{errors.matricula}</Text>
+              ) : null}
+            </View>
 
-      </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Senha</Text>
+              <View style={[
+                styles.inputContainer,
+                errors.senha ? styles.inputError : null
+              ]}>
+                <MaterialIcons name="lock" size={20} color={SIOB_COLORS.placeholder} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Digite sua senha"
+                  placeholderTextColor={SIOB_COLORS.placeholder}
+                  value={senha}
+                  onChangeText={setSenha}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  editable={!isLoading}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
+                >
+                  <MaterialIcons
+                    name={showPassword ? 'visibility' : 'visibility-off'}
+                    size={20}
+                    color={SIOB_COLORS.placeholder}
+                  />
+                </TouchableOpacity>
+              </View>
+              {errors.senha ? (
+                <Text style={styles.errorText}>{errors.senha}</Text>
+              ) : null}
+            </View>
+
+            <View style={styles.separator} />
+
+            <TouchableOpacity
+              style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+              onPress={handleLogin}
+              disabled={isLoading}
+            >
+              <Text style={styles.loginButtonText}>
+                {isLoading ? 'ENTRANDO...' : 'ENTRAR'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Versão 1.0.0</Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -59,101 +186,124 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: SIOB_COLORS.primary,
+    backgroundColor: SIOB_COLORS.background,
   },
-  centeredContent: {
+  container: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
-  logoArea: {
-    paddingBottom: 20,
-    justifyContent: 'flex-start',
+  header: {
     alignItems: 'center',
-    backgroundColor: SIOB_COLORS.primary,
-  },
-  formCard: {
-    backgroundColor: SIOB_COLORS.white,
-    padding: 30,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 10,
+    marginBottom: 32,
   },
   logoContainer: {
-    width: 100,
-    height: 100,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoWrapper: {
+    width: 120,
+    height: 120,
+    borderRadius: 20,
     backgroundColor: SIOB_COLORS.white,
-    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    overflow: 'hidden',
+  },
+  logo: {
+    width: '100%',
+    height: '100%',
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: SIOB_COLORS.primary,
+  },
+  formContainer: {
+    backgroundColor: SIOB_COLORS.cardBg,
+    borderRadius: 12,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: SIOB_COLORS.text,
+    marginBottom: 8,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: SIOB_COLORS.inputBackground,
+    borderWidth: 1,
+    borderColor: SIOB_COLORS.border,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 50,
+  },
+  inputError: {
+    borderColor: SIOB_COLORS.error,
+  },
+  input: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 16,
+    color: SIOB_COLORS.text,
+  },
+  eyeButton: {
+    padding: 4,
+  },
+  errorText: {
+    fontSize: 12,
+    color: SIOB_COLORS.error,
+    marginTop: 4,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#e9ecef',
+    marginVertical: 16,
+  },
+  loginButton: {
+    backgroundColor: SIOB_COLORS.primary,
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 3,
   },
-  // *** ESTILO PARA A LOGO AGORA É OBRIGATÓRIO ***
-  logoImage: {
-    width: '80%',
-    height: '80%',
+  loginButtonDisabled: {
+    opacity: 0.6,
   },
-
-  title: {
-    fontSize: 18,
+  loginButtonText: {
     color: SIOB_COLORS.white,
-    fontWeight: '500',
-    marginBottom: 10,
-  },
-
-  // ESTILOS PARA INPUT COM ÍCONE
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: SIOB_COLORS.background,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    minHeight: 50,
-  },
-  inputIcon: {
-    marginRight: 10,
-  },
-  inputField: {
-    flex: 1,
-    paddingVertical: 15,
     fontSize: 16,
-    color: SIOB_COLORS.text,
-  },
-
-  button: {
-    width: '100%',
-    backgroundColor: SIOB_COLORS.primary,
-    padding: 15,
-    borderRadius: 8,
-    marginTop: 20,
-    alignItems: 'center',
-    shadowColor: SIOB_COLORS.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 10,
-  },
-  buttonText: {
-    color: SIOB_COLORS.white,
-    fontSize: 18,
     fontWeight: 'bold',
+  },
+  footer: {
+    marginTop: 32,
+    alignItems: 'center',
+  },
+  footerText: {
+    fontSize: 12,
+    color: SIOB_COLORS.placeholder,
   },
 });

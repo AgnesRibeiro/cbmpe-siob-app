@@ -1,50 +1,127 @@
-# Welcome to your Expo app 👋
+## 📌 Sobre o Projeto
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+O **SIOB (Sistema Integrado de Ocorrências de Bombeiros)** é uma solução digital completa desenvolvida para **modernizar e otimizar o processo de coleta e gestão de dados de ocorrências em campo** para o **Corpo de Bombeiros Militar de Pernambuco (CBMPE)**.
 
-## Get started
+A plataforma substitui o preenchimento manual de formulários em papel por um sistema **digital eficiente e responsivo**, que funciona **tanto online quanto offline**, garantindo a integridade e agilidade das informações.
 
-1. Install dependencies
+## O sistema é composto por duas frentes principais:
 
-   ```bash
-   npm install
-   ```
+### 📱 Aplicativo de Campo (PWA / Mobile)
+Ferramenta robusta para os militares em atendimento, permitindo o **registro padronizado de ocorrências em tempo real**, com captura de mídias (fotos, vídeos), **geolocalização e assinaturas digitais**.
 
-2. Start the app
+### 💻 Painel Administrativo (Web)
+Plataforma central para o comando e analistas, oferecendo **dashboards, relatórios, gestão de usuários e visão geral das operações registradas**.
 
-   ```bash
-   npx expo start
-   ```
+> Este projeto está sendo desenvolvido pela equipe de alunas do **3º período do curso de Análise e Desenvolvimento de Sistemas (2025.2)** da **Faculdade Senac Pernambuco**.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## ✨ Funcionalidades Principais
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 💻 Painel Administrativo (Web)
+- 🔑 **Autenticação e Perfis:** múltiplos níveis de acesso (admin, analista, chefe).  
+- 🔎 **Listagem e Filtro de Ocorrências:** busca por período, tipo, região e status.  
+- 📄 **Visualização de Detalhes:** acesso completo às informações e mídias da ocorrência.  
+- 📊 **Relatórios e Exportação:** relatórios em CSV e PDF.  
+- 👤 **Gestão de Usuários:** CRUD, redefinição de senha e controle de perfis.  
+- 🛡️ **Auditoria e Logs:** rastreabilidade de ações críticas.  
+- 📈 **Dashboard Operacional:** KPIs e gráficos dinâmicos sobre as ocorrências.  
 
-## Get a fresh project
+### 📱 Aplicativo de Campo (Mobile)
+- 🔒 **Autenticação Segura:** login com credenciais institucionais.  
+- 📝 **Registro de Ocorrência:** formulários padronizados (Básico, Incêndio, APH, etc.).  
+- 📴 **Modo Offline:** registro de dados sem conexão, com sincronização posterior.  
+- 📍 **Captura de GPS:** localização automática da ocorrência.  
+- 📸 **Captura de Fotos:** anexos diretamente da câmera.  
+- ✍️ **Assinatura Digital:** coleta de assinaturas de testemunhas/vítimas.  
+- 🔄 **Edição Offline:** ajustes antes da sincronização.  
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
+## 🛠️ Ferramentas e Tecnologias
+
+| Categoria | Ferramenta / Tecnologia |
+|------------|--------------------------|
+| **Frontend Web** | React.js, TypeScript, React Router (PWA) |
+| **Estilização** | CSS com Variáveis Globais (Temas) |
+| **Backend** | Node.js com Express *(sugerido)* |
+| **Banco de Dados** | PostgreSQL |
+| **Mobile** | React Native + Expo Go |
+| **Controle de Versão** | Git & GitHub |
+
+---
+
+## 🚀 Como Executar o Projeto
+
+Para executar o projeto do painel web em seu ambiente de desenvolvimento local, siga os passos abaixo.
+
+1. **Clone o Repositório**
+
+git clone [https://github.com/Vanessa-Matias/cbmpe-siob-app](https://github.com/Vanessa-Matias/cbmpe-siob-app)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. **Executando o Painel Web (React)** 💻
 
-## Learn more
+cd web-app
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. **Instale as dependências**
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+npm install
+```
 
-## Join the community
+4. **Execute a aplicação**
 
-Join our community of developers creating universal apps.
+npm start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Após executar o comando start, abra seu navegador e acesse http://localhost:3000 para ver a aplicação em execução.
+**Nota PWA:** Para testar a instalação e o modo offline, é necessário gerar a build de produção: npm run build seguido de npx serve -s build.
+
+5. **Executando o App Mobile (React Native)** 📱
+
+# Acesse a pasta do projeto mobile (a partir da raiz)
+cd mobile-app
+
+```
+
+# Instale as dependências
+npm install
+
+````
+
+# Inicie o projeto Expo
+npx expo start
+
+````
+
+Certifique-se de ter o aplicativo Expo Go instalado no seu celular ou um emulador configurado. Escaneie o QR Code exibido no terminal com o app Expo Go (Android/iOS).
+
+**Troubleshooting Mobile:** Caso encontre problemas com o cache, execute: 
+
+npx expo start -c
+```
+
+---
+
+## 👩‍💻 Equipe
+
+| Membro             | Responsabilidade(s)                               | GitHub                                                     | LinkedIn                                                              |
+| :----------------- | :------------------------------------------------ | :--------------------------------------------------------- | :-------------------------------------------------------------------- |
+| **Vanessa Matias** | Desenvolvimento Front-End             | [Vanessa-Matias](https://github.com/Vanessa-Matias)        | [Perfil](https://www.linkedin.com/in/vanessamatiasdev/)               |
+| **Wedja Souza** | Gestão de Projetos, Documentação & UX/UI Designer | [WedjaSousa](https://github.com/WedjaSousa)                | [Perfil](https://www.linkedin.com/in/wedja-sousa-43639b19b/)           |
+| **Marcela Negrão** | UX/UI Designer & Banco de Dados                   | `(adicionar)`                                              | [Perfil](https://www.linkedin.com/in/marcela-negrão-0974582a5/)        |
+| **Wslany Amorim** | Banco de Dados & Back-End                                    | [wslanyl](https://github.com/wslanyl)                      | [Perfil](https://www.linkedin.com/in/wslanylima/)                 |
+| **Sophia Santos** | UX/UI Designer & Back-End                                   | [sophiasousaa](https://github.com/sophiasousaa)            | [Perfil](https://www.linkedin.com/in/santos-sophia/)                  |
+| **Agnes Ribeiro** | App- Mobile & Documentação                                      | [AgnesRibeiro](https://github.com/AgnesRibeiro) | [Perfil](https://www.linkedin.com/in/agnes-ribeiro-6446392ab/)        |
+
+---
+
+<p align="center">
+  Projeto desenvolvido sob a orientação dos professores
+  <b><a href="https://www.linkedin.com/in/geraldogomes/" target="_blank">Geraldo Gomes</a></b>,
+  <b><a href="https://www.linkedin.com/in/dansoaresfarias/" target="_blank">Danilo Farias</a></b>,
+  <b><a href="https://www.linkedin.com/in/marcos-tenorio/" target="_blank">Marcos Roberto</a></b> e
+  <b><a href="https://www.linkedin.com/in/weltondionisio/" target="_blank">Welton Dionísio</a></b>.<br>
+  <b>Faculdade SENAC Pernambuco</b> — Disciplina de Projeto Integrador.
+</p>
