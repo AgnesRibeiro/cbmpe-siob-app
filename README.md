@@ -30,11 +30,9 @@ Plataforma central para o comando e analistas, oferecendo **dashboards, relatór
 ### 📱 Aplicativo de Campo (Mobile)
 - 🔒 **Autenticação Segura:** login com credenciais institucionais.  
 - 📝 **Registro de Ocorrência:** formulários padronizados (Básico, Incêndio, APH, etc.).  
-- 📴 **Modo Offline:** registro de dados sem conexão, com sincronização posterior.  
 - 📍 **Captura de GPS:** localização automática da ocorrência.  
 - 📸 **Captura de Fotos:** anexos diretamente da câmera.  
 - ✍️ **Assinatura Digital:** coleta de assinaturas de testemunhas/vítimas.  
-- 🔄 **Edição Offline:** ajustes antes da sincronização.  
 
 ---
 
